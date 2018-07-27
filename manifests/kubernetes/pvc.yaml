@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: fio-pv-claim
+  name: fio-data
 spec:
   storageClassName: standard
   # storageClassName: local-storage

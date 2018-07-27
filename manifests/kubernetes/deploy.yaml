@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fio-tools
+spec:
+  selector:
+    matchLabels:
+      app: fio-tools
+  template:
+    metadata:
+      labels:
+        app: fio-tools
+    spec:
+        volumes:
+        - name: gen-data
+          persistentVolumeClaim:
+            claimName: fio-data
+        - name: gen-json
+          emptyDir: {}
+        - name: server-files
+          emptyDir: {}
+        containers:
+        - name: fio-frontend
+          imagePullPolicy: Always
+          image: artmr/fio-http-server:0.1
+          volumeMounts:
+          - name: server-files
+            mountPath: /server-files
+          ports:
+          - containerPort: 8000
+        initContainers:
+        - name: fio-gen-data
+          imagePullPolicy: Always
+          image: artmr/fio-gen-data:0.1
+          args: ["/app/job-templates/random-template.fio"]
+          volumeMounts:
+          - name: gen-data
+            mountPath: /app/data
+          - name: gen-json
+            mountPath: /app/benchmarks
+          env:
+            - name: BLOCKSIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.blocksize
+            - name: SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.size
+            - name: DIRECTORY
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.directory
+            - name: RUNTIME
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.runtime
+            - name: OUTPUT
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.output
+        - name: fio-gen-plots
+          imagePullPolicy: Always
+          image: artmr/fio-gen-plots:0.1
+          args: ["-L", "-i", "/benchmarks"]
+          volumeMounts:
+          - name: gen-json
+            mountPath: /benchmarks
+          - name: server-files
+            mountPath: /data/charts/

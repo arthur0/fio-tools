@@ -11,7 +11,7 @@ do
 	do
 		sync
 		# TODO(arthur0) Investigate log: /proc/sys/vm/drop_caches: Read-only file system
-		echo 3 > /proc/sys/vm/drop_caches
+		# echo 3 > /proc/sys/vm/drop_caches
 		MYPWD=`pwd`
 		echo "========================================="
 		echo "Running benchmark $mode with I/O depth of $iodepth and size $SIZE"

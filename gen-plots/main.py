@@ -17,6 +17,9 @@ import argparse
 
 class Chart(object):
 
+    # TODO(arthur0): Change this to handle the path as a parameter 
+    CHARTS_PATH='/data/charts/'
+
     def __init__(self, data, settings):
         self.data = data
         self.settings = settings
@@ -104,7 +107,7 @@ class Chart(object):
 
         plt.tight_layout()
 
-        plt.savefig(mode + 'iops_latency.png')
+        plt.savefig(self.CHARTS_PATH + mode + 'iops_latency.png')
         plt.close('all')
 
     def get_sorted_mixed_list(self, unsorted_list):

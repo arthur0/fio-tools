@@ -1,16 +1,20 @@
 # TODO(arthur0): Change image to alpine
-FROM python:3
+FROM python:3.6
 
 LABEL mantainer=arthur.souzamiranda@gmail.com
 
-COPY . /app
-WORKDIR /app
+RUN mkdir -p /usr/src/app
 
-RUN pip install pipenv
-
-RUN pipenv install --system --deploy
+WORKDIR /usr/src/app
 
 ENV MPLBACKEND="agg"
 
-ENTRYPOINT ["python", "app.py"]
+RUN pip install pipenv
 
+COPY Pipfile* /usr/src/app/
+RUN pipenv install --system --deploy
+
+COPY main.py /usr/src/app
+RUN mkdir -p /data/charts/
+
+ENTRYPOINT ["python3", "main.py"]
