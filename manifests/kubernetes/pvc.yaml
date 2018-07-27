@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fio-pv-claim
+spec:
+  storageClassName: standard
+  # storageClassName: local-storage
+  # storageClassName: ceph-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
