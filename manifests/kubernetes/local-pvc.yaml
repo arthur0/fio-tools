@@ -1,11 +1,11 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: fio-data
+  name: fio-data-local
 spec:
-  storageClassName: standard
-  # storageClassName: local-storage
-  # storageClassName: ceph-storage
+  storageClassName: local-storage
+  # storageClassName: rook-ceph-block
+  # storageClassName: default
   accessModes:
     - ReadWriteOnce
   resources:

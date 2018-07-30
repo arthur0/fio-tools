@@ -5,7 +5,7 @@ metadata:
   namespace: default
 data:
   gen-data.blocksize: '4k'
-  gen-data.size: '10M'
+  gen-data.size: '100M'
   gen-data.directory: '/app/data'
   gen-data.runtime: '60'
   gen-data.output: '/app/benchmarks'

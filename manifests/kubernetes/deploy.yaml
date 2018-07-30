@@ -14,7 +14,7 @@ spec:
         volumes:
         - name: gen-data
           persistentVolumeClaim:
-            claimName: fio-data
+            claimName: fio-data-local
         - name: gen-json
           emptyDir: {}
         - name: server-files

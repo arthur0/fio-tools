@@ -17,7 +17,7 @@ import argparse
 
 class Chart(object):
 
-    # TODO(arthur0): Change this to handle the path as a parameter 
+    # TODO(arthur0): Change this to handle the path as a parameter
     CHARTS_PATH='/data/charts/'
 
     def __init__(self, data, settings):
