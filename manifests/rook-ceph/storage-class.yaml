@@ -1,0 +1,13 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: rook-ceph
+provisioner: ceph.rook.io/block
+parameters:
+  pool: replicapool
+  # Specify the namespace of the rook cluster from which to create volumes.
+  # If not specified, it will use `rook` as the default namespace of the cluster.
+  # This is also the namespace where the cluster will be
+  clusterNamespace: rook-ceph
+  # Specify the filesystem type of the volume. If not specified, it will use `ext4`.
+  # fstype: ext4
