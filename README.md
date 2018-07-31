@@ -1,36 +1,8 @@
+
+
+
 [WIP]
-
-[Understanding Lantency and Storage Performace] (http://louwrentius.com/understanding-iops-latency-and-storage-performance.html)
-
-Input/Output operations per second (IOPS)
-
-Latency: How fast a single I/O request is handled
-
-1000 IOPS with an average latency of 10ms may get better than
-5000 IOPS with an average latency of 50ms
-| Especifically if the application is sensitive to latency, such as a database
-
-```
-  [IO]  [IO]  [IO]
--------------------> Time
-  10ms  10ms  10ms
-```
-
-```
-                            20ms
-                     <--------------------->
-                    [       wait     ][ IO ]
-              [       wait     ][ IO ]
-        [       wait     ][ IO ]
-  [       wait     ][ IO ]    #4
-  [   wait   ][ IO ]          #3    IO Queue
-  [wait][ IO ]                #2    Depth = 4
-  [ IO ]                      #1
-  <--->
-   5ms
-------------------------------------------->
-                         Time
-```
+[Understanding Lantency and Storage Performace](http://louwrentius.com/understanding-iops-latency-and-storage-performance.html)
 
 - Generate data:
 1. For each IO Depth { 04 08 16 32 64 128 } (static)

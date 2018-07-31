@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: local-pv
+  name: local
 spec:
   capacity:
-    storage: 1Gi
-  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+    storage: 5Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: local-storage
+  storageClassName: local
   local:
     path: /mnt/disks/ssd1
   nodeAffinity:
