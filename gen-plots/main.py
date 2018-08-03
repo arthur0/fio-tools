@@ -18,7 +18,7 @@ import argparse
 class Chart(object):
 
     # TODO(arthur0): Change this to handle the path as a parameter
-    CHARTS_PATH='/data/charts/'
+    PLOTS_PATH = '/plots'
 
     def __init__(self, data, settings):
         self.data = data
@@ -107,7 +107,7 @@ class Chart(object):
 
         plt.tight_layout()
 
-        plt.savefig(self.CHARTS_PATH + mode + 'iops_latency.png')
+        plt.savefig(self.PLOTS_PATH + mode + 'iops_latency.png')
         plt.close('all')
 
     def get_sorted_mixed_list(self, unsorted_list):
@@ -244,14 +244,20 @@ class benchmark(object):
     def getStats(self, mode):
         result = {}
         for record in self.data:
-            depth = record['jobs'][0]['job options']['iodepth'].lstrip("0")
-            if record['jobs'][0]['job options']['rw'] == 'rand' + str(mode):
+            job = record['jobs'][0]
+            depth = job['job options']['iodepth'].lstrip("0")
+
+            if job['job options']['rw'] == 'rand' + str(mode):
+
+                lat_ns = job[mode]['lat_ns']['mean']
+                lat_micro = lat_ns/1000
+               
                 row = {'iodepth': depth,
-                       'iops': record['jobs'][0][mode]['iops'],
-                       'lat': record['jobs'][0][mode]['lat_ns']['mean'],
-                       'lat_stddev': record['jobs'][0][mode]['lat_ns']['stddev'],
-                       'latency_ms': record['jobs'][0]['latency_ms'],
-                       'latency_us': record['jobs'][0]['latency_us']}
+                       'iops': job[mode]['iops'],
+                       'lat': lat_micro,
+                       'lat_stddev': job[mode]['lat_ns']['stddev'],
+                       'latency_ms': job['latency_ms'],
+                       'latency_us': job['latency_us']}
                 result[depth] = row
 
         return result

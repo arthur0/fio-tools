@@ -12,20 +12,22 @@ spec:
         app: fio-tools
     spec:
         volumes:
-        - name: gen-data
+        - name: data
           persistentVolumeClaim:
-            claimName: fio-data-local
-        - name: gen-json
+            claimName: local
+        - name: benchmarks
           emptyDir: {}
-        - name: server-files
+        - name: plots
           emptyDir: {}
         containers:
         - name: fio-frontend
           imagePullPolicy: Always
           image: artmr/fio-http-server:0.1
           volumeMounts:
-          - name: server-files
-            mountPath: /server-files
+          - name: benchmarks
+            mountPath: /server/benchmarks
+          - name: plots
+            mountPath: /server/plots
           ports:
           - containerPort: 8000
         initContainers:
@@ -34,42 +36,72 @@ spec:
           image: artmr/fio-gen-data:0.1
           args: ["/app/job-templates/random-template.fio"]
           volumeMounts:
-          - name: gen-data
+          - name: data 
             mountPath: /app/data
-          - name: gen-json
+          - name: benchmarks
             mountPath: /app/benchmarks
           env:
-            - name: BLOCKSIZE
+            - name: OUTPUT_DIR
               valueFrom:
                 configMapKeyRef:
                   name: fio-tools
-                  key: gen-data.blocksize
-            - name: SIZE
+                  key: gen-data.output-dir
+            - name: BLOCK_SIZE
               valueFrom:
                 configMapKeyRef:
                   name: fio-tools
-                  key: gen-data.size
+                  key: gen-data.block-size
+            - name: DIRECT
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.direct
             - name: DIRECTORY
               valueFrom:
                 configMapKeyRef:
                   name: fio-tools
                   key: gen-data.directory
+            - name: FILENAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.filename
+            - name: IO_ENGINE
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.io-engine
+            - name: LOG_AVG_MSEC
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.log-avg-msec
+            - name: RAND_REPEAT
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.rand-repeat
             - name: RUNTIME
               valueFrom:
                 configMapKeyRef:
                   name: fio-tools
                   key: gen-data.runtime
-            - name: OUTPUT
+            - name: SIZE
               valueFrom:
                 configMapKeyRef:
                   name: fio-tools
-                  key: gen-data.output
+                  key: gen-data.size
+            - name: TIME_BASED
+              valueFrom:
+                configMapKeyRef:
+                  name: fio-tools
+                  key: gen-data.time-based
         - name: fio-gen-plots
           imagePullPolicy: Always
           image: artmr/fio-gen-plots:0.1
           args: ["-L", "-i", "/benchmarks"]
           volumeMounts:
-          - name: gen-json
+          - name: benchmarks
             mountPath: /benchmarks
-          - name: server-files
-            mountPath: /data/charts/
+          - name: plots
+            mountPath: /plots

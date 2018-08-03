@@ -5,4 +5,7 @@ LABEL mantainer=arthur.souzamiranda@gmail.com
 
 EXPOSE 8000
 
+RUN mkdir -p /server/benchmarks
+RUN mkdir -p /server/plots
+
 CMD ["python3", "-m", "http.server", "8000"]

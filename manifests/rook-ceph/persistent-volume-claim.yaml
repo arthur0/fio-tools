@@ -1,9 +1,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: rook-ceph
+  name: ceph
 spec:
-  storageClassName: rook-ceph
+  storageClassName: ceph
   accessModes:
     - ReadWriteOnce
   resources:

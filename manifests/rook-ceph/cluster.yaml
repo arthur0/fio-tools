@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: rook-ceph
+  name: ceph
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: rook-ceph-cluster
-  namespace: rook-ceph
+  name: ceph-cluster
+  namespace: ceph
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: rook-ceph-cluster
-  namespace: rook-ceph
+  name: ceph-cluster
+  namespace: ceph
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
@@ -23,44 +23,44 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: rook-ceph-cluster-mgmt
-  namespace: rook-ceph
+  name: ceph-cluster-mgmt
+  namespace: ceph
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: rook-ceph-cluster-mgmt
+  name: ceph-cluster-mgmt
 subjects:
 - kind: ServiceAccount
-  name: rook-ceph-system
-  namespace: rook-ceph-system
+  name: ceph-system
+  namespace: ceph-system
 ---
 # Allow the pods in this namespace to work with configmaps
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: rook-ceph-cluster
-  namespace: rook-ceph
+  name: ceph-cluster
+  namespace: ceph
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: rook-ceph-cluster
+  name: ceph-cluster
 subjects:
 - kind: ServiceAccount
-  name: rook-ceph-cluster
-  namespace: rook-ceph
+  name: ceph-cluster
+  namespace: ceph
 ---
 apiVersion: ceph.rook.io/v1beta1
 kind: Cluster
 metadata:
-  name: rook-ceph
-  namespace: rook-ceph
+  name: ceph
+  namespace: ceph
 spec:
   # The path on the host where configuration files will be persisted. If not specified, a kubernetes emptyDir will be created (not recommended).
   # Important: if you reinstall the cluster, make sure you delete this directory from each host or else the mons will fail to start on the new cluster.
   # In Minikube, the '/data' directory is configured to persist across reboots. Use "/data/rook" in Minikube environment.
   dataDirHostPath: /var/lib/rook
   # The service account under which to run the daemon pods in this cluster if the default account is not sufficient (OSDs)
-  serviceAccount: rook-ceph-cluster
+  serviceAccount: ceph-cluster
   # set the amount of mons to be started
   mon:
     count: 3
