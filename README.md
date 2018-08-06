@@ -45,6 +45,15 @@ R/W...................MIX
 
 ### Experiment
 
+DEPLOY LOCAL
+DEPLOY CEPH
+
+
 [Fio](https://linux.die.net/man/1/fio) is a tool that will spawn a number of threads or processes doing a particular type of I/O action.
 
 [ConfigMap](/manifests/kubernetes/configmap.yaml)
+TODO: Configmap !
+
+
+TODO: Deploy Ceph-Local
+TODO: expreiment details

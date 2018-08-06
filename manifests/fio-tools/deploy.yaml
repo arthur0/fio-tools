@@ -15,6 +15,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: local
+            # claimName: ceph
         - name: benchmarks
           emptyDir: {}
         - name: plots

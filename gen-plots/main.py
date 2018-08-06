@@ -7,24 +7,30 @@
 # Requires matplotib and numpy.
 #
 
+import argparse
+import logging
+import json
 import os
 import sys
-import json
+
 import matplotlib.pyplot as plt
 import numpy as np
-import argparse
+
+logging.basicConfig()
 
 
 class Chart(object):
 
-    # TODO(arthur0): Change this to handle the path as a parameter
-    PLOTS_PATH = '/plots'
+    # TODO(arthur0): Change this to handle the path as a parameter/envoirment
+    PLOTS_PATH = '/plots/'
 
     def __init__(self, data, settings):
         self.data = data
         self.settings = settings
 
     def plot_io_and_latency(self, mode):
+        logging.info("Ploting IO and Latency")
+        
         fig, (ax, ax3) = plt.subplots(
             nrows=2, gridspec_kw={'height_ratios': [7, 1]})
         ax2 = ax.twinx()
@@ -82,19 +88,19 @@ class Chart(object):
                           fontsize=9)
 
         #
-        # Create Standard Deviation Table
+        # TODO: Create Standard Deviation Table
         #
-        table_vals = [series['x_series'], series['y_series4']]
-        cols = len(series['x_series'])
-        table = ax3.table(cellText=table_vals, loc='center right', rowLabels=[
-                          'IO queue depth', r'$Latency\ \sigma\ \%$'],
-                          colLoc='center right',
-                          cellLoc='center right', colWidths=[0.05] * cols,
-                          rasterized=False)
-        table.scale(1,1.2)
+        # table_vals = [series['x_series'], series['y_series4']]
+        # cols = len(series['x_series'])
+        # table = ax3.table(cellText=table_vals, loc='center right', rowLabels=[
+        #                   'IO queue depth', r'$Latency\ \sigma\ \%$'],
+        #                   colLoc='center right',
+        #                   cellLoc='center right', colWidths=[0.05] * cols,
+        #                   rasterized=False)
+        # table.scale(1,1.2)
 
-        for key, cell in table.get_celld().items():
-            cell.set_linewidth(0)
+        # for key, cell in table.get_celld().items():
+        #     cell.set_linewidth(0)
 
         ax3.axis('off')
 
@@ -111,7 +117,8 @@ class Chart(object):
         plt.close('all')
 
     def get_sorted_mixed_list(self, unsorted_list):
-
+        logging.info("Sorting mixed list ")
+        
         def get_type(x):
             try:
                 return int(x)
@@ -136,7 +143,8 @@ class Chart(object):
         return sorted_list
 
     def plot_latency_histogram(self, mode):
-
+        logging.info("Ploting latency histogram")
+        
         latency_data = self.data
         for depth in sorted(latency_data.keys()):
 
@@ -219,6 +227,7 @@ class benchmark(object):
         self.settings = settings
 
     def listJsonFiles(self, directory):
+        logging.info("Listing JSON files")
         absolute_dir = os.path.abspath(directory)
         files = os.listdir(absolute_dir)
         json_files = []
@@ -229,12 +238,14 @@ class benchmark(object):
         return json_files
 
     def getJSONFileStats(self, filename):
+        logging.info("Loading JSON files")
         with open(filename) as json_data:
             d = json.load(json_data)
 
         return d
 
     def getDataSet(self):
+        logging.info("Loading DataSet")
         d = []
         for f in self.listJsonFiles(self.directory):
             d.append(self.getJSONFileStats(f))
