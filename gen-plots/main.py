@@ -7,24 +7,30 @@
 # Requires matplotib and numpy.
 #
 
+import argparse
+import logging
+import json
 import os
 import sys
-import json
+
 import matplotlib.pyplot as plt
 import numpy as np
-import argparse
+
+logging.basicConfig()
 
 
 class Chart(object):
 
-    # TODO(arthur0): Change this to handle the path as a parameter
-    CHARTS_PATH='/data/charts/'
+    # TODO(arthur0): Change this to handle the path as a parameter/envoirment
+    PLOTS_PATH = '/plots/'
 
     def __init__(self, data, settings):
         self.data = data
         self.settings = settings
 
     def plot_io_and_latency(self, mode):
+        logging.info("Ploting IO and Latency")
+        
         fig, (ax, ax3) = plt.subplots(
             nrows=2, gridspec_kw={'height_ratios': [7, 1]})
         ax2 = ax.twinx()
@@ -82,19 +88,19 @@ class Chart(object):
                           fontsize=9)
 
         #
-        # Create Standard Deviation Table
+        # TODO: Create Standard Deviation Table
         #
-        table_vals = [series['x_series'], series['y_series4']]
-        cols = len(series['x_series'])
-        table = ax3.table(cellText=table_vals, loc='center right', rowLabels=[
-                          'IO queue depth', r'$Latency\ \sigma\ \%$'],
-                          colLoc='center right',
-                          cellLoc='center right', colWidths=[0.05] * cols,
-                          rasterized=False)
-        table.scale(1,1.2)
+        # table_vals = [series['x_series'], series['y_series4']]
+        # cols = len(series['x_series'])
+        # table = ax3.table(cellText=table_vals, loc='center right', rowLabels=[
+        #                   'IO queue depth', r'$Latency\ \sigma\ \%$'],
+        #                   colLoc='center right',
+        #                   cellLoc='center right', colWidths=[0.05] * cols,
+        #                   rasterized=False)
+        # table.scale(1,1.2)
 
-        for key, cell in table.get_celld().items():
-            cell.set_linewidth(0)
+        # for key, cell in table.get_celld().items():
+        #     cell.set_linewidth(0)
 
         ax3.axis('off')
 
@@ -107,11 +113,12 @@ class Chart(object):
 
         plt.tight_layout()
 
-        plt.savefig(self.CHARTS_PATH + mode + 'iops_latency.png')
+        plt.savefig(self.PLOTS_PATH + mode + 'iops_latency.png')
         plt.close('all')
 
     def get_sorted_mixed_list(self, unsorted_list):
-
+        logging.info("Sorting mixed list ")
+        
         def get_type(x):
             try:
                 return int(x)
@@ -136,7 +143,8 @@ class Chart(object):
         return sorted_list
 
     def plot_latency_histogram(self, mode):
-
+        logging.info("Ploting latency histogram")
+        
         latency_data = self.data
         for depth in sorted(latency_data.keys()):
 
@@ -219,6 +227,7 @@ class benchmark(object):
         self.settings = settings
 
     def listJsonFiles(self, directory):
+        logging.info("Listing JSON files")
         absolute_dir = os.path.abspath(directory)
         files = os.listdir(absolute_dir)
         json_files = []
@@ -229,12 +238,14 @@ class benchmark(object):
         return json_files
 
     def getJSONFileStats(self, filename):
+        logging.info("Loading JSON files")
         with open(filename) as json_data:
             d = json.load(json_data)
 
         return d
 
     def getDataSet(self):
+        logging.info("Loading DataSet")
         d = []
         for f in self.listJsonFiles(self.directory):
             d.append(self.getJSONFileStats(f))
@@ -244,14 +255,20 @@ class benchmark(object):
     def getStats(self, mode):
         result = {}
         for record in self.data:
-            depth = record['jobs'][0]['job options']['iodepth'].lstrip("0")
-            if record['jobs'][0]['job options']['rw'] == 'rand' + str(mode):
+            job = record['jobs'][0]
+            depth = job['job options']['iodepth'].lstrip("0")
+
+            if job['job options']['rw'] == 'rand' + str(mode):
+
+                lat_ns = job[mode]['lat_ns']['mean']
+                lat_micro = lat_ns/1000
+               
                 row = {'iodepth': depth,
-                       'iops': record['jobs'][0][mode]['iops'],
-                       'lat': record['jobs'][0][mode]['lat_ns']['mean'],
-                       'lat_stddev': record['jobs'][0][mode]['lat_ns']['stddev'],
-                       'latency_ms': record['jobs'][0]['latency_ms'],
-                       'latency_us': record['jobs'][0]['latency_us']}
+                       'iops': job[mode]['iops'],
+                       'lat': lat_micro,
+                       'lat_stddev': job[mode]['lat_ns']['stddev'],
+                       'latency_ms': job['latency_ms'],
+                       'latency_us': job['latency_us']}
                 result[depth] = row
 
         return result

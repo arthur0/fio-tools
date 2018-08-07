@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fio-tools
+  namespace: default
+data:
+  # Directory to save the output data (It's not a fio parameter).
+  gen-data.output-dir: '/app/benchmarks'
+  # Prefix filename with this directory (see FILENAME).
+  gen-data.directory: '/app/data'
+  # The block size in bytes used for I/O units. Default: 4096.
+  gen-data.block-size: '4096'
+  # If value is true, use non-buffered I/O. Default: false.
+  gen-data.direct: '1'
+  # Fio normally makes up a filename based on the job name.
+  gen-data.filename: 'fio-test.bin'
+  # Defines how the job issues I/O to the file.
+  # libaio Linux native asynchronous I/O.
+  gen-data.io-engine: 'libaio'
+  # By default, fio will log an entry in the iops, latency, or bw log
+  # for every I/O that completes. When writing to the disk log, that
+  # can quickly grow to a very large size. Setting this option makes
+  # fio average the each log entry over the specified period of time,
+  # reducing the resolution of the log.
+  gen-data.log-avg-msec: '1000'
+  # Seed the random number generator used for random I/O patterns in a
+  # predictable way so the pattern is repeatable across runs.
+  # Default: true.
+  gen-data.rand-repeat: '1'
+  # Tell fio to terminate processing after the specified period of time.
+  gen-data.runtime: '30'
+  # How much data are we going to be reading/writing.
+  gen-data.size: '50Mi'
+  # If set, fio will run for the duration of the runtime specified
+  # even if the file(s) are completely read or written
+  gen-data.time-based: '0'

@@ -15,6 +15,8 @@ COPY Pipfile* /usr/src/app/
 RUN pipenv install --system --deploy
 
 COPY main.py /usr/src/app
-RUN mkdir -p /data/charts/
+
+RUN mkdir -p /benchmarks
+RUN mkdir -p /plots
 
 ENTRYPOINT ["python3", "main.py"]
