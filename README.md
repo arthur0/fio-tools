@@ -149,7 +149,7 @@ kubectl apply -f \
   https://raw.githubusercontent.com/rook/rook/master/cluster/examples/kubernetes/ceph/pool.yaml
 ```
 
-**OR**  (relicated: 3)
+**OR**  (relicated pool: 3)
 ```yaml
 cat <<EOF | kubectl create -f -
 apiVersion: ceph.rook.io/v1beta1
@@ -162,12 +162,47 @@ spec:
   crushRoot: default
   replicated:
     size: 3
-EPF
+EOF
+```
+
+Now, you are able to create a StorageClass that refers to our pool:
+```yaml
+cat <<EOF | kubectl create -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: rook-ceph-block
+provisioner: ceph.rook.io/block
+parameters:
+  pool: replicapool
+  clusterNamespace: rook-ceph
+  fstype: ext4
+EOF
 ```
 
 Once you have a Persistent Volume Clain you can configure the fio options in the [ConfigMap](./manifests/configmap.yaml) and map `PersistentVolumeClaim` name, in the `Deployment` [manifest](./manifests/deploy.yaml#17).
 
 The examples (Charts and benchmark outputs) using Local Storage Class and using Rook-Ceph (no-replicated and replicated) can be found [here](./examples/)
+
+TODO:
+https://portworx.com/products/introduction/
+https://github.com/portworx
+https://docs.portworx.com/ <<Interactive tutorials>>
+https://docs.portworx.com/scheduler/kubernetes/ <<features>>
+
+Main install
+https://docs.portworx.com/scheduler/kubernetes/install.html
+https://install.portworx.com/1.4/
+OBS: Create a dedicated partition
+
+ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+
+helm install --debug --name mongo --set etcdEndPoint=etcd:http://etcd-cluster-client.default:2379,clusterName=mongo-cluster ./helm/charts/portworx/
+
+
 
 Randread Local Storage:
 ![](./examples/local/readiops_latency.png)
