@@ -15,7 +15,7 @@ provides a way for administrators to describe “classes” of storage
 [[docs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)]
 A piece of storage in the cluster that has been provisioned by an administrator.
 
-* **PersistentVolumeClain**
+* **PersistentVolumeClaim**
 [[docs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#lifecycle-of-a-volume-and-claim)]
 Request storage from PersistentVolume or directly from StorageClass.
 
